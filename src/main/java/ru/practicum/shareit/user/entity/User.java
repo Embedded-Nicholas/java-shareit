@@ -3,8 +3,6 @@ package ru.practicum.shareit.user.entity;
 import lombok.*;
 import ru.practicum.shareit.user.enums.UserRole;
 
-import java.util.Objects;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

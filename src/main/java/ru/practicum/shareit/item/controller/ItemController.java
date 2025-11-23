@@ -32,13 +32,13 @@ public class ItemController {
     public ItemResponseDto updateItemById(
             @RequestBody ItemUpdateDto updateDto,
             @PathVariable("itemId") Long itemId,
-            @RequestHeader(value = ItemController .USER_ID_HEADER, required = true) Long userId) {
+            @RequestHeader(value = ItemController.USER_ID_HEADER, required = true) Long userId) {
         return itemService.updateItem(itemId, updateDto, userId);
     }
 
     @PostMapping
     public ResponseEntity<ItemResponseDto> createItem(
-            @RequestHeader(value = "X-Sharer-User-Id", required = false) Long ownerId,
+            @RequestHeader(value = ItemController.USER_ID_HEADER, required = true) Long ownerId,
             @RequestBody @Valid ItemRequestDto itemRequestDto) {
 
         ItemResponseDto response = itemService.createItem(itemRequestDto, ownerId);
@@ -47,7 +47,7 @@ public class ItemController {
 
     @GetMapping("/search")
     public Collection<ItemResponseDto> searchItemsByQuery(@RequestParam String text,
-                                                          @RequestHeader(value = "X-Sharer-User-Id", required = false) Long ownerId) {
+                                                          @RequestHeader(value = ItemController.USER_ID_HEADER, required = true) Long ownerId) {
         if (text == null || text.isBlank()) {
             return Collections.emptyList();
         }
