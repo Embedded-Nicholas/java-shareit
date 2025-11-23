@@ -77,7 +77,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemResponseDto> searchItems(String query, Long ownerId) {
-        if (!userRepository.findById(ownerId).isPresent()) {
+        if (userRepository.findById(ownerId).isEmpty()) {
             throw new UserNotFoundException("User not found");
         }
 
