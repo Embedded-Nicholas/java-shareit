@@ -1,8 +1,6 @@
 package ru.practicum.shareit.item.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import org.mapstruct.*;
 import ru.practicum.shareit.item.dto.ItemRequestDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.item.dto.ItemUpdateDto;
@@ -20,7 +18,6 @@ public interface ItemMapper {
     @Mapping(source = "owner.id", target = "ownerId")
     ItemResponseDto toDto(Item entity);
 
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateItemFromDto(ItemUpdateDto dto, @MappingTarget Item entity);
 }
-
-
