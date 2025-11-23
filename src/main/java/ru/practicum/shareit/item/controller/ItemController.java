@@ -21,19 +21,18 @@ import java.util.Collections;
 @RequestMapping("/items")
 public class ItemController {
     private final ItemService itemService;
+    public static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     @GetMapping("/{itemId}")
-    @ResponseBody
     public ItemResponseDto getItemById(@PathVariable("itemId") Long itemId) {
         return itemService.getItemById(itemId);
     }
 
     @PatchMapping("/{itemId}")
-    @ResponseBody
     public ItemResponseDto updateItemById(
             @RequestBody ItemUpdateDto updateDto,
             @PathVariable("itemId") Long itemId,
-            @RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId) {
+            @RequestHeader(value = ItemController .USER_ID_HEADER, required = true) Long userId) {
         return itemService.updateItem(itemId, updateDto, userId);
     }
 
@@ -47,7 +46,6 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    @ResponseBody
     public Collection<ItemResponseDto> searchItemsByQuery(@RequestParam String text,
                                                           @RequestHeader(value = "X-Sharer-User-Id", required = false) Long ownerId) {
         if (text == null || text.isBlank()) {
@@ -58,7 +56,6 @@ public class ItemController {
     }
 
     @GetMapping
-    @ResponseBody
     public Collection<ItemResponseDto> getAllItems(@RequestHeader(value = "X-Sharer-User-Id", required = false) Long ownerId) {
         return itemService.getUserItems(ownerId);
     }
