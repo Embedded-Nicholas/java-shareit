@@ -52,15 +52,18 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Optional.ofNullable(userRequestDto.email())
-                .flatMap(userRepository::findByEmail)
-                .filter(existing -> !existing.getId().equals(userId))
-                .ifPresent(existing -> {
-                    throw new UserAlreadyExistsException("User already exists with email: " + userRequestDto.email());
+                .ifPresent(newEmail -> {
+                    if (!newEmail.equals(user.getEmail())) {
+                        userRepository.findByEmail(newEmail)
+                                .ifPresent(existing -> {
+                                    throw new UserAlreadyExistsException("User already exists with email: " + newEmail);
+                                });
+                    }
                 });
 
         this.userMapper.updateUserFromDto(userRequestDto, user);
-        this.userRepository.save(user);
-        return this.userMapper.toDto(user);
+        User savedUser = userRepository.save(user);
+        return this.userMapper.toDto(savedUser);
     }
 
     @Override
