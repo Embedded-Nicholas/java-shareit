@@ -20,7 +20,7 @@ public class BookingServiceUtils {
         }
 
         if (dto.bookingEndDate().isBefore(dto.bookingStartDate()) || dto.bookingEndDate().equals(dto.bookingStartDate())) {
-            throw  new ValidationException("End date must be after start date");
+            throw new ValidationException("End date must be after start date");
         }
 
         if (dto.bookingStartDate().isBefore(LocalDateTime.now())) {
@@ -51,7 +51,7 @@ public class BookingServiceUtils {
         }
     }
 
-    public static void checkOwnerAndRequestor(Booking booking, Long requesterId){
+    public static void checkOwnerAndRequestor(Booking booking, Long requesterId) {
         if (!booking.getItem().getOwner().getId().equals(requesterId)) {
             throw new ValidationException("Only item owner can manage booking");
         }

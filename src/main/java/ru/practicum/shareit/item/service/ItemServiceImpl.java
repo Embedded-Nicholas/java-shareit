@@ -1,13 +1,9 @@
 package ru.practicum.shareit.item.service;
 
-import jakarta.persistence.Column;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
-import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.enums.BookingStatus;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -27,8 +23,6 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.entity.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
-
-import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Comparator;
@@ -93,7 +87,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Transactional
-    public ItemResponseDto updateItem(Long itemId, ItemUpdateDto dto, Long ownerId){
+    public ItemResponseDto updateItem(Long itemId, ItemUpdateDto dto, Long ownerId) {
         Item item = this.itemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException("Item not found"));
 

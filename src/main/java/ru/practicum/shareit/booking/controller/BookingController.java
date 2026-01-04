@@ -13,6 +13,7 @@ import ru.practicum.shareit.booking.service.BookingService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 
@@ -116,7 +117,7 @@ public class BookingController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
-    
+
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<String> handleAccessDenied(AccessDeniedException e) {
         log.warn("Access denied: {}", e.getMessage());

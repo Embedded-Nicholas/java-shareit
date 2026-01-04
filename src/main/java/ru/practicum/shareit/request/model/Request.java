@@ -2,11 +2,7 @@ package ru.practicum.shareit.request.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import ru.practicum.shareit.user.entity.User;
-
-import javax.print.attribute.standard.MediaSize;
 import java.time.LocalDateTime;
 
 @Entity

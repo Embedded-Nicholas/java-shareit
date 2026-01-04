@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class BookingServiceImpl implements BookingService{
+public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
     private final UserRepository userRepository;
@@ -88,10 +88,10 @@ public class BookingServiceImpl implements BookingService{
         BookingServiceUtils.checkOwnerAndRequestor(booking, requesterId);
 
         Item item = booking.getItem();
-        if (approved){
+        if (approved) {
             booking.setStatus(BookingStatus.APPROVED);
             item.setAvailable(false);
-        } else{
+        } else {
             booking.setStatus(BookingStatus.REJECTED);
             item.setAvailable(true);
         }
@@ -108,7 +108,7 @@ public class BookingServiceImpl implements BookingService{
     public BookingResponseDto getBooking(Long requesterId, Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new BookingNotFoundException(
                 String.format("Booking with id=%d not found", bookingId)));
-        if (this.validateBookingAccess(booking, requesterId)){
+        if (this.validateBookingAccess(booking, requesterId)) {
             return bookingMapper.toDto(booking);
         }
         return null;

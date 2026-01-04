@@ -20,4 +20,5 @@ public record BookingCreateDto(
         @Future(message = "End date must be in future")
         @JsonProperty("end")
         LocalDateTime bookingEndDate
-){}
+) {
+}
