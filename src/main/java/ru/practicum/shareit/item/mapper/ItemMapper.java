@@ -9,11 +9,6 @@ import ru.practicum.shareit.item.model.Item;
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ItemMapper {
-
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "available", defaultValue = "false")
-    @Mapping(target = "request", ignore = true)
-    @Mapping(target = "owner", ignore = true)
     Item toEntity(ItemRequestDto dto);
 
     @Mapping(source = "owner.id", target = "ownerId")
