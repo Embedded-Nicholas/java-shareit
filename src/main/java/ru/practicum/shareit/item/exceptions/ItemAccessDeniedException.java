@@ -1,10 +1,8 @@
 package ru.practicum.shareit.item.exceptions;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import ru.practicum.shareit.exception.AccessDeniedException;
 
-@ResponseStatus(HttpStatus.FORBIDDEN)
-public class ItemAccessDeniedException extends RuntimeException {
+public class ItemAccessDeniedException extends AccessDeniedException {
     public ItemAccessDeniedException(String message) {
         super(message);
     }
