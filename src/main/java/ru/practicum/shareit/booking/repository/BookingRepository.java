@@ -74,4 +74,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             @Param("itemId") Long itemId,
             @Param("status") BookingStatus status,
             @Param("currentTime") LocalDateTime currentTime);
+
+    @Query("SELECT b FROM Booking b JOIN FETCH b.item WHERE b.id = :id")
+    Optional<Booking> findByIdWithItem(@Param("id") Long id);
 }
