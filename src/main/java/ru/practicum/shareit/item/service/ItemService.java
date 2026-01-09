@@ -11,11 +11,11 @@ import java.nio.file.AccessDeniedException;
 import java.util.Collection;
 
 public interface ItemService {
-    ItemResponseDto getItemById(Long itemId);
+    ItemResponseDto getItemById(Long itemId,Long ownerId);
 
     ItemResponseDto createItem(ItemRequestDto requestDto, Long ownerId);
 
-    ItemResponseDto updateItem(Long itemId, ItemUpdateDto dto, Long ownerId) throws AccessDeniedException;
+    ItemResponseDto updateItem(Long itemId, ItemUpdateDto dto, Long ownerId);
 
     Collection<ItemResponseDto> searchItems(String query, Long ownerId);
 
