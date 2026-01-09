@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.controller;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
@@ -42,34 +42,23 @@ public class BookingController {
     @PatchMapping("/{bookingId}")
     public ResponseEntity<BookingResponseDto> approveBooking(
             @PathVariable Long bookingId,
-            @RequestParam Boolean approved,
+            @NotNull @RequestParam(required = false) Boolean approved,
             @RequestHeader(USER_ID_HEADER) Long userId) {
-
         log.info("PATCH /bookings/{} - User {} {} booking",
                 bookingId, userId, approved ? "approving" : "rejecting");
 
-        try {
-            BookingResponseDto response = bookingService.manageBooking(userId, bookingId, approved);
-            return ResponseEntity.ok(response);
-        } catch (AccessDeniedException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+        BookingResponseDto response = bookingService.manageBooking(userId, bookingId, approved);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{bookingId}")
     public ResponseEntity<BookingResponseDto> getBooking(
             @PathVariable Long bookingId,
-            @RequestHeader(USER_ID_HEADER) Long userId) throws AccessDeniedException {
+            @RequestHeader(USER_ID_HEADER) Long userId) {
 
         log.info("GET /bookings/{} - Getting booking for user: {}", bookingId, userId);
 
         BookingResponseDto booking = bookingService.getBooking(userId, bookingId);
-
-        if (booking == null) {
-            log.warn("User {} denied access to booking {}", userId, bookingId);
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-
         return ResponseEntity.ok(booking);
     }
 
@@ -110,17 +99,7 @@ public class BookingController {
         log.info("PATCH /bookings/{}/cancel - User {} cancelling booking",
                 bookingId, userId);
 
-        try {
-            BookingResponseDto response = bookingService.cancelBooking(bookingId, userId);
-            return ResponseEntity.ok(response);
-        } catch (AccessDeniedException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<String> handleAccessDenied(AccessDeniedException e) {
-        log.warn("Access denied: {}", e.getMessage());
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        BookingResponseDto response = bookingService.cancelBooking(bookingId, userId);
+        return ResponseEntity.ok(response);
     }
 }
