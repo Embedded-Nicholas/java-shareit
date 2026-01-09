@@ -1,6 +1,5 @@
 package ru.practicum.shareit.booking.service;
 
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.enums.BookingStatus;
+import ru.practicum.shareit.booking.exception.BookingAccessDeniedException;
 import ru.practicum.shareit.booking.exception.BookingNotFoundException;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
@@ -24,7 +24,6 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.entity.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
-import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,8 +64,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingResponseDto cancelBooking(Long bookingId, Long bookerId) throws AccessDeniedException {
-        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new BookingNotFoundException(
+    public BookingResponseDto cancelBooking(Long bookingId, Long bookerId){
+        Booking booking = bookingRepository.findByIdWithItem(bookingId).orElseThrow(() -> new BookingNotFoundException(
                 String.format("Booking with id=%d not found", bookingId)));
 
         BookingServiceUtils.validateCancellationRules(booking, bookerId);
@@ -81,7 +80,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingResponseDto manageBooking(Long requesterId, Long bookingId, Boolean approved) throws AccessDeniedException {
+    public BookingResponseDto manageBooking(Long requesterId, Long bookingId, Boolean approved) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new BookingNotFoundException(
                 String.format("Booking with id=%d not found", bookingId)));
 
@@ -108,10 +107,9 @@ public class BookingServiceImpl implements BookingService {
     public BookingResponseDto getBooking(Long requesterId, Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new BookingNotFoundException(
                 String.format("Booking with id=%d not found", bookingId)));
-        if (this.validateBookingAccess(booking, requesterId)) {
-            return bookingMapper.toDto(booking);
-        }
-        return null;
+        validateBookingAccessOrThrow(booking, requesterId);
+
+        return bookingMapper.toDto(booking);
     }
 
     @Transactional(readOnly = true)
@@ -164,15 +162,12 @@ public class BookingServiceImpl implements BookingService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(propagation = Propagation.NEVER)
-    public boolean validateBookingAccess(Booking booking, Long userId) {
-        boolean isBooker = booking.getBooker() != null &&
-                booking.getBooker().getId().equals(userId);
-        boolean isOwner = booking.getItem() != null &&
-                booking.getItem().getOwner() != null &&
-                booking.getItem().getOwner().getId().equals(userId);
+    private void validateBookingAccessOrThrow(Booking booking, Long requesterId) {
+        boolean isOwner = booking.getItem().getOwner().getId().equals(requesterId);
+        boolean isBooker = booking.getBooker().getId().equals(requesterId);
 
-        return isBooker || isOwner;
+        if (!isOwner && !isBooker) {
+            throw new BookingAccessDeniedException(requesterId, booking.getId());
+        }
     }
-
 }
