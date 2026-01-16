@@ -1,6 +1,7 @@
 package ru.practicum.shareit.gateway.special.client;
 
 import org.springframework.http.*;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
@@ -12,7 +13,7 @@ import java.util.Objects;
 public class BaseClient {
     protected final RestTemplate rest;
 
-    public BaseClient(RestTemplate rest) {
+    public BaseClient(@NonNull RestTemplate rest) {
         this.rest = Objects.requireNonNull(rest);;
     }
 
