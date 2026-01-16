@@ -8,8 +8,8 @@ import ru.practicum.shareit.user.dto.UserRequestDto;
 import ru.practicum.shareit.user.dto.UserResponseDto;
 import ru.practicum.shareit.user.dto.UserUpdateDto;
 import ru.practicum.shareit.user.entity.User;
-import ru.practicum.shareit.user.exceptions.UserAlreadyExistsException;
-import ru.practicum.shareit.user.exceptions.UserNotFoundException;
+import ru.practicum.shareit.user.exception.UserAlreadyExistsException;
+import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -43,7 +43,8 @@ public class UserServiceImpl implements UserService {
                     throw new UserAlreadyExistsException("User already exists with email: " + userRequestDto.email());
                 });
 
-        return this.userMapper.toDto(this.userRepository.save(userMapper.toEntity(userRequestDto)));
+        User user = userMapper.toEntity(userRequestDto);
+        return this.userMapper.toDto(this.userRepository.save(user));
     }
 
     @Override
