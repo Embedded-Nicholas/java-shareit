@@ -134,7 +134,8 @@ class ItemDtoTest {
         assertEquals("Description", dto.description());
         assertTrue(dto.available());
         assertEquals(2L, dto.ownerId());
-        assertNull(dto.comments());
+        assertNotNull(dto.comments());
+        assertTrue(dto.comments().isEmpty());
         assertNull(dto.lastBooking());
         assertNull(dto.nextBooking());
         assertEquals(3L, dto.requestId());
@@ -158,8 +159,8 @@ class ItemDtoTest {
         assertNull(dto.name());
         assertNull(dto.description());
         assertNull(dto.available());
-        assertNull(dto.ownerId());
-        assertNull(dto.comments());
+        assertNotNull(dto.comments());
+        assertTrue(dto.comments().isEmpty());;
         assertNull(dto.lastBooking());
         assertNull(dto.nextBooking());
         assertNull(dto.requestId());

@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,6 +29,7 @@ class UserCreateDtoJsonTest {
 
     @BeforeEach
     void setUp() {
+        Locale.setDefault(Locale.ENGLISH);
         validator = Validation.buildDefaultValidatorFactory().getValidator();
     }
 
