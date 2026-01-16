@@ -15,4 +15,7 @@ public record RequestDto(
         Instant created,
         List<ItemForRequestDto> items
 ) {
+    public RequestDto {
+        items = items != null ? List.copyOf(items) : List.of();
+    }
 }
