@@ -13,6 +13,7 @@ import ru.practicum.shareit.server.item.model.Item;
 import ru.practicum.shareit.server.user.entity.User;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +40,7 @@ class CommentServiceImplIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        now = LocalDateTime.now();
+        now = LocalDateTime.now().truncatedTo(ChronoUnit.MICROS);
 
         owner = new User();
         owner.setName("Owner");
