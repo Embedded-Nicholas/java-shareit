@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.gateway.special.exception.AccessDeniedException;
 
+import java.nio.file.AccessDeniedException;
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
