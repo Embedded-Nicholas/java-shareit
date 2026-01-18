@@ -15,6 +15,7 @@ import ru.practicum.shareit.gateway.core.item.ItemClient;
 import ru.practicum.shareit.gateway.core.item.dto.comment.CommentRequestDto;
 import ru.practicum.shareit.gateway.core.item.dto.item.CreateItemDto;
 import ru.practicum.shareit.gateway.core.item.dto.item.ItemUpdateDto;
+import ru.practicum.shareit.gateway.special.utils.HttpHeaders;
 
 @RestController
 @RequestMapping("/items")
@@ -22,14 +23,12 @@ import ru.practicum.shareit.gateway.core.item.dto.item.ItemUpdateDto;
 @Slf4j
 @Validated
 public class ItemController {
-
-    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
     private final ItemClient itemClient;
 
     @GetMapping("/{itemId}")
     public ResponseEntity<Object> getItemById(
             @PositiveOrZero @PathVariable Long itemId,
-            @PositiveOrZero @RequestHeader(USER_ID_HEADER) Long ownerId) {
+            @PositiveOrZero @RequestHeader(HttpHeaders.SHARER_USER_ID) Long ownerId) {
 
         log.info("Gateway: GET /items/{} - Getting item for user: {}", itemId, ownerId);
         return itemClient.getItemById(itemId, ownerId);
@@ -39,7 +38,7 @@ public class ItemController {
     public ResponseEntity<Object> updateItemById(
             @RequestBody ItemUpdateDto updateDto,
             @PositiveOrZero @PathVariable Long itemId,
-            @PositiveOrZero @RequestHeader(USER_ID_HEADER) Long userId) {
+            @PositiveOrZero @RequestHeader(HttpHeaders.SHARER_USER_ID) Long userId) {
 
         log.info("Gateway: PATCH /items/{} - Updating item by user: {}", itemId, userId);
         return itemClient.updateItem(itemId, updateDto, userId);
@@ -47,7 +46,7 @@ public class ItemController {
 
     @PostMapping
     public ResponseEntity<Object> createItem(
-            @PositiveOrZero @RequestHeader(USER_ID_HEADER) Long ownerId,
+            @PositiveOrZero @RequestHeader(HttpHeaders.SHARER_USER_ID) Long ownerId,
             @RequestBody @Valid CreateItemDto itemRequestDto) {
 
         log.info("Gateway: POST /items - Creating item for user: {}", ownerId);
@@ -57,7 +56,7 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public ResponseEntity<Object> createItemComment(
             @RequestBody @Valid CommentRequestDto request,
-            @PositiveOrZero @RequestHeader(USER_ID_HEADER) Long userId,
+            @PositiveOrZero @RequestHeader(HttpHeaders.SHARER_USER_ID) Long userId,
             @PositiveOrZero @PathVariable Long itemId) {
 
         log.info("Gateway: POST /items/{}/comment - Adding comment by user: {}", itemId, userId);
@@ -67,7 +66,7 @@ public class ItemController {
     @GetMapping("/search")
     public ResponseEntity<Object> searchItemsByQuery(
             @RequestParam(required = false, defaultValue = "") String text,
-            @PositiveOrZero @RequestHeader(USER_ID_HEADER) Long ownerId,
+            @PositiveOrZero @RequestHeader(HttpHeaders.SHARER_USER_ID) Long ownerId,
             @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC)
             Pageable pageable) {
 
@@ -81,7 +80,7 @@ public class ItemController {
 
     @GetMapping
     public ResponseEntity<Object> getUserItems(
-            @PositiveOrZero @RequestHeader(USER_ID_HEADER) Long ownerId,
+            @PositiveOrZero @RequestHeader(HttpHeaders.SHARER_USER_ID) Long ownerId,
             @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC)
             Pageable pageable) {
 

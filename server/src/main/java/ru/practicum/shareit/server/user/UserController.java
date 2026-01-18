@@ -1,6 +1,8 @@
 package ru.practicum.shareit.server.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.server.item.dto.ItemResponseDto;
 import ru.practicum.shareit.server.user.dto.UserCreateDto;
@@ -18,30 +20,34 @@ public class UserController {
     private final UserServiceImpl userService;
 
     @GetMapping("/{userId}/items")
-    public Collection<ItemResponseDto> getAllUserItems(@PathVariable Long userId) {
-        return userService.getAllUserItems(userId);
+    public ResponseEntity<Collection<ItemResponseDto>> getAllUserItems(@PathVariable Long userId) {
+        Collection<ItemResponseDto> items = userService.getAllUserItems(userId);
+        return ResponseEntity.ok(items);
     }
 
     @GetMapping("/{userId}")
-    public UserResponseDto getUserById(@PathVariable Long userId) {
-        return userService.getUserById(userId);
+    public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long userId) {
+        UserResponseDto user = userService.getUserById(userId);
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping
-    public UserResponseDto createUser(@RequestBody UserCreateDto userRequestDto) {
-        return userService.createUser(userRequestDto);
+    public ResponseEntity<UserResponseDto> createUser(@RequestBody UserCreateDto userRequestDto) {
+        UserResponseDto createdUser = userService.createUser(userRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     @PatchMapping("/{userId}")
-    public UserResponseDto updateUser(
+    public ResponseEntity<UserResponseDto> updateUser(
             @PathVariable Long userId,
             @RequestBody UserUpdateDto userUpdateDto) {
-        return userService.updateUser(userId, userUpdateDto);
+        UserResponseDto updatedUser = userService.updateUser(userId, userUpdateDto);
+        return ResponseEntity.ok(updatedUser);
     }
 
     @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable Long userId) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
+        return ResponseEntity.noContent().build();
     }
 }
-

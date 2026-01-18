@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.PositiveOrZero;
 import ru.practicum.shareit.gateway.core.request.RequestClient;
 import ru.practicum.shareit.gateway.core.request.dto.CreateRequestDto;
+import ru.practicum.shareit.gateway.special.utils.HttpHeaders;
 
 @RestController
 @RequestMapping("/requests")
@@ -20,13 +21,11 @@ import ru.practicum.shareit.gateway.core.request.dto.CreateRequestDto;
 @Slf4j
 @Validated
 public class RequestController {
-
-    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
     private final RequestClient requestClient;
 
     @GetMapping
     public ResponseEntity<Object> findUserOwnRequests(
-            @PositiveOrZero @RequestHeader(USER_ID_HEADER) Long requestorId,
+            @PositiveOrZero @RequestHeader(HttpHeaders.SHARER_USER_ID) Long requestorId,
             @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC)
             Pageable pageable) {
 
@@ -40,7 +39,7 @@ public class RequestController {
 
     @GetMapping("/all")
     public ResponseEntity<Object> findOtherUsersRequests(
-            @PositiveOrZero @RequestHeader(USER_ID_HEADER) Long requestorId,
+            @PositiveOrZero @RequestHeader(HttpHeaders.SHARER_USER_ID) Long requestorId,
             @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC)
             Pageable pageable) {
 
@@ -62,7 +61,7 @@ public class RequestController {
 
     @PostMapping
     public ResponseEntity<Object> createRequest(
-            @PositiveOrZero @RequestHeader(USER_ID_HEADER) Long userId,
+            @PositiveOrZero @RequestHeader(HttpHeaders.SHARER_USER_ID) Long userId,
             @RequestBody @Valid CreateRequestDto requestDto) {
 
         log.info("Gateway: POST /requests - Creating request for user: {}", userId);

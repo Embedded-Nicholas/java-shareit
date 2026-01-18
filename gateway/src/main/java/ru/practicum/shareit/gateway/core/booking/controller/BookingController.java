@@ -13,6 +13,7 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import ru.practicum.shareit.gateway.core.booking.BookingClient;
 import ru.practicum.shareit.gateway.core.booking.dto.BookItemRequestDto;
+import ru.practicum.shareit.gateway.special.utils.HttpHeaders;
 
 @RestController
 @RequestMapping("/bookings")
@@ -20,14 +21,12 @@ import ru.practicum.shareit.gateway.core.booking.dto.BookItemRequestDto;
 @Slf4j
 @Validated
 public class BookingController {
-
-    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
     private final BookingClient bookingClient;
 
     @PostMapping
     public ResponseEntity<Object> createBooking(
             @RequestBody @Valid BookItemRequestDto requestDto,
-            @PositiveOrZero @RequestHeader(USER_ID_HEADER) Long userId) {
+            @PositiveOrZero @RequestHeader(HttpHeaders.SHARER_USER_ID) Long userId) {
 
         log.info("Gateway: POST /bookings - Creating booking for user: {}, item: {}",
                 userId, requestDto.itemId());
@@ -39,7 +38,7 @@ public class BookingController {
     public ResponseEntity<Object> approveBooking(
             @PositiveOrZero @PathVariable Long bookingId,
             @RequestParam Boolean approved,
-            @PositiveOrZero @RequestHeader(USER_ID_HEADER) Long userId) {
+            @PositiveOrZero @RequestHeader(HttpHeaders.SHARER_USER_ID) Long userId) {
 
         log.info("Gateway: PATCH /bookings/{} - User {} {} booking",
                 bookingId, userId, approved ? "approving" : "rejecting");
@@ -50,7 +49,7 @@ public class BookingController {
     @GetMapping("/{bookingId}")
     public ResponseEntity<Object> getBooking(
             @PositiveOrZero @PathVariable Long bookingId,
-            @PositiveOrZero @RequestHeader(USER_ID_HEADER) Long userId) {
+            @PositiveOrZero @RequestHeader(HttpHeaders.SHARER_USER_ID) Long userId) {
 
         log.info("Gateway: GET /bookings/{} - Getting booking for user: {}",
                 bookingId, userId);
@@ -60,7 +59,7 @@ public class BookingController {
 
     @GetMapping("/owner")
     public ResponseEntity<Object> getOwnerBookings(
-            @PositiveOrZero @RequestHeader(USER_ID_HEADER) Long userId,
+            @PositiveOrZero @RequestHeader(HttpHeaders.SHARER_USER_ID) Long userId,
             @NotBlank @NotNull @RequestParam(defaultValue = "ALL") String state,
             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
             @RequestParam(defaultValue = "10") @Positive int size) {
@@ -73,7 +72,7 @@ public class BookingController {
 
     @GetMapping
     public ResponseEntity<Object> getUserBookings(
-            @PositiveOrZero @RequestHeader(USER_ID_HEADER) Long userId,
+            @PositiveOrZero @RequestHeader(HttpHeaders.SHARER_USER_ID) Long userId,
             @RequestParam(defaultValue = "ALL") String state,
             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
             @RequestParam(defaultValue = "10") @Positive int size) {
@@ -87,7 +86,7 @@ public class BookingController {
     @PatchMapping("/{bookingId}/cancel")
     public ResponseEntity<Object> cancelBooking(
             @PositiveOrZero @PathVariable Long bookingId,
-            @PositiveOrZero @RequestHeader(USER_ID_HEADER) Long userId) {
+            @PositiveOrZero @RequestHeader(HttpHeaders.SHARER_USER_ID) Long userId) {
 
         log.info("Gateway: PATCH /bookings/{}/cancel - User {} cancelling booking",
                 bookingId, userId);
